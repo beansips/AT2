@@ -68,7 +68,7 @@ info["Active Ports"] =  ports
 for i, j in info.items(): 
 	print(i, " - ", j) 
 	
-file = "C:/Users/tylarp/Documents/VS Code/computers.csv"
+file = "computers.csv"
 
 # Reading csv file and checking the MAC address.
 with open(file, newline="") as csvfile:
