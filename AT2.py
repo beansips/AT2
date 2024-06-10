@@ -1,3 +1,10 @@
+"""
+File: AT2.py
+Author: Tylar Pinniger
+Date: 10/06/2024
+Description: This script collects the fingerprint of a computer and logs it into a csv file.
+"""
+
 import csv
 import platform
 import uuid 
@@ -34,9 +41,12 @@ ct = datetime.datetime.now()
 info["System Time"] =  ct
 
 def perform_speed_test():
-   st = speedtest.Speedtest()
-   downloadSpeed = st.download() / 1000000  # Convert to Mbps
-   return round(downloadSpeed, 2)
+   try: 
+        st = speedtest.Speedtest()
+        downloadSpeed = st.download() / 1000000  # Convert to Mbps
+        return round(downloadSpeed, 2)
+   except:
+         print("speedtest failed, please make sure you have installed the speedtest module")
 
 downloadSpeed = perform_speed_test()
 info["Internet Connection Speed"] = str(downloadSpeed) + " Mbps"
@@ -70,17 +80,29 @@ for i, j in info.items():
 	
 file = "computers.csv"
 
+macExists = False
+
 # Reading csv file and checking the MAC address.
-with open(file, newline="") as csvfile:
-    reader = csv.DictReader(csvfile)
-    macExists = False
-    for row in reader:
-        macAddress = row["MAC Address"]
-        print(macAddress + " has been read")
-		# MAC address is already in file
-        if macAddress == info["MAC Address"]:
-            print("computer already added to file")
-            macExists = True
+try:
+    with open(file, newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            try:
+                macAddress = row["MAC Address"]
+                print(macAddress + " has been read")
+                # MAC address is already in file
+                if macAddress == info["MAC Address"]:
+                    print("computer already added to file")
+                    macExists = True
+            except:
+                print("failed to read mac address from file: " + file)
+except:
+    print("failed to read file: " + file + ". Creating the file...")
+    fields = ['Computer Name', 'IP Address', 'MAC Address', 'Processor Model', 'Operation System', 'System time', 'Internet connection speed', 'Active ports']
+    with open(file, "w", newline="") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
+        writer.writeheader()
+
 
 csvfile.close()
 
