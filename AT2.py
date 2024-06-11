@@ -25,10 +25,17 @@ info["IP Address"] = socket.gethostbyname(socket.gethostname())
 info["MAC Address"] = hex(uuid.getnode())
 
 # Processor name 
-processorName = platform.processor() 
+def get_processor():
+    try:
+        processorName = platform.processor() 
+        if processorName == "":
+             processorName = "processor unknown"
+    except:
+        print("Processor found")
+    return processorName
 
-# Adding processor name to dictionary. 
-info["Processor Model"] = processorName 
+# Adding processor to dictionary.
+info["Processor Model"] = get_processor()
 
 # Platform details 
 platformDetails = platform.platform() 
